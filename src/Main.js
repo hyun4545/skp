@@ -3,8 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Card } from "react-bootstrap";
 import { useState } from "react";
 import axios from "axios";
-import settings from './settings';
-
+import settings from "./settings";
 
 function Main() {
   const qryKinds = [
@@ -65,11 +64,10 @@ function Main() {
     setSelectStockIds(rowSelectionModel);
   }
 
-  function onAddStocks(e)
-  {
-    var body= selectStockIds.map((s)=>({ userId:"nini",stockCode:s }));
+  function onAddStocks(e) {
+    var body = selectStockIds.map((s) => ({ userId: "nini", stockCode: s }));
     console.log(body);
-    axios.post(`${settings.apiUrl}saveUserStockes`,body);
+    axios.post(`${settings.apiUrl}saveUserStockes`, body);
   }
 
   return (
@@ -118,7 +116,13 @@ function Main() {
               checkboxSelection={true}
               onRowSelectionModelChange={onStockSelect}
             />
-            <button onClick={onAddStocks} style={{ width: "100px",background:'green',color:'white' }} className="btn">加入</button>
+            <button
+              onClick={onAddStocks}
+              style={{ width: "100px", background: "green", color: "white" }}
+              className="btn"
+            >
+              加入
+            </button>
           </Card>
         </Grid>
         <Grid xs={12} md={12} style={{ background: "pink" }}></Grid>

@@ -4,29 +4,33 @@ import {
   MenuItem,
   Stack,
   Button,
-  Grid,
   Box,
-  Container,
   InputLabel,
   FormControl,
-  Backdrop,
-  CircularProgress,
 } from "@mui/material";
 import Card from "@mui/material/Card";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import useConfirm from "./hooks/useConfirm";
+import useSpinner from "./hooks/useSpinner";
 
 function User(props) {
   const [addUser, setAddUser] = useState();
+  const [selectUserId, setSelectUserId] = useState();
+  const [getConfirmation, Confirmation] = useConfirm();
+  const [getSpinner, Spinner] = useSpinner();
 
-  function onAddUser() {
+  async function onAddUser() {
     console.log(`onAddUser:${addUser}`);
     console.log(props);
-    props.spinnerOpen();
+    const status = await getConfirmation(
+      "Shall we have dinner together tonight?"
+    );
+    if (status) {
+      await getSpinner(status);
+    }
+
     var millisecondsToWait = 2000;
-    setTimeout(function () {
-      props.spinnerClose();
-    }, millisecondsToWait);
+    setTimeout(function () {}, millisecondsToWait);
   }
 
   function onAddUserChange(e) {
@@ -60,10 +64,12 @@ function User(props) {
                 <MenuItem value={30}>Thirty</MenuItem>
               </Select>
             </FormControl>
-            <Button to={`/`}>進入</Button>
+            <Button to={`/Main/${selectUserId}`}>進入</Button>
           </Stack>
         </Stack>
       </Card>
+      <Confirmation />
+      <Spinner />
     </Box>
   );
 }
