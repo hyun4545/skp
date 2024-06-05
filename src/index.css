@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+iframe {
+  display: none;
+}
+
+.bg {
+  background: "#c0d8f0";
+}
+
+.btn {
+  background: '#3c3c73';
+  color: 'white';
+}

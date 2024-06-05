@@ -2,17 +2,18 @@ import Main from "./Main";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import User from "./User";
 import React, { useState } from "react";
+import { MessageBoxProvider } from "./helpers/MessageBox";
 
 function App() {
   return (
-    <div>
+    <MessageBoxProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<User />} />
-          <Route path="/Main/:user" element={<Main />} />
+          <Route path="/Main/:userId" element={<Main />} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </MessageBoxProvider>
   );
 }
 

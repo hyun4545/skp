@@ -1,14 +1,24 @@
-import { Grid, Stack, Select, MenuItem } from "@mui/material";
+import { Grid, Stack, Select, MenuItem, Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Card } from "react-bootstrap";
-import { useState } from "react";
-import axios from "axios";
-import settings from "./settings";
+import { useContext, useState } from "react";
+import { useParams } from "react-router-dom";
+import useAxios from "./helpers/useAxios";
+import { MessageBoxContext } from "./helpers/MessageBox";
 
-function Main() {
+function Main() { 
+  const [selectKind, setSelectKind] = useState("stockName");
+  const [keyword, setKeyword] = useState("");
+  const [allStock, setAllStock] = useState([]);
+  const [selectStockIds, setSelectStockIds] = useState([]);
+  const [userStocks,setUserStocks]=useState([]);
+  const { userId } = useParams();
+  const MessageBox=useContext(MessageBoxContext);
+  const [ApiGet, ApiPost] = useAxios();
+
   const qryKinds = [
-    { value: "stockCode", label: "代碼" },
     { value: "stockName", label: "名稱" },
+    { value: "stockCode", label: "代碼" },    
   ];
 
   const columns = [
@@ -23,18 +33,12 @@ function Main() {
     },
   ];
 
-  const [selectKind, setSelectKind] = useState("stockCode");
-  const [keyword, setKeyword] = useState("");
-  const [allStock, setAllStock] = useState([]);
-  const [selectStockIds, setSelectStockIds] = useState([]);
-
   function searchAllStock() {
-    axios
-      .get(`${settings.apiUrl}getAllStock`)
-      .then((response) => {
+    
+    ApiGet(`getAllStock`,(data) => {
         switch (selectKind) {
           case "stockCode":
-            var arr = response.data
+            var arr = data
               .filter((d) => d.Code == keyword)
               .map((d, i) => ({ id: d.Code, Code: d.Code, Name: d.Name }));
             console.log(arr);
@@ -42,14 +46,13 @@ function Main() {
             break;
 
           case "stockName":
-            var arr = response.data
+            var arr = data
               .filter((d) => d.Name.includes(keyword))
               .map((d, i) => ({ id: d.Code, Code: d.Code, Name: d.Name }));
             setAllStock(arr);
             break;
         }
       })
-      .catch((error) => console.log(error));
   }
 
   function selectKindChange(e) {
@@ -65,15 +68,14 @@ function Main() {
   }
 
   function onAddStocks(e) {
-    var body = selectStockIds.map((s) => ({ userId: "nini", stockCode: s }));
-    console.log(body);
-    axios.post(`${settings.apiUrl}saveUserStockes`, body);
+    var body = selectStockIds.map((s) => ({ userId:userId, stockCode: s }));
+    ApiPost(`saveUserStockes`, body);
   }
 
   return (
-    <div className="App">
-      <Grid container spacing={1}>
-        <Grid xs={12} md={12} style={{ height: "auto", maxHeight: "50%" }}>
+    <Box style={{ background: "#c0d8f0" }} minHeight="100vh">
+      <Grid container display="flex" justifyContent="center">
+        <Grid xs={12} md={10}>
           <Card style={{ margin: "15px", padding: "15px" }}>
             <Stack direction="row" spacing={2}>
               <Select
@@ -127,7 +129,7 @@ function Main() {
         </Grid>
         <Grid xs={12} md={12} style={{ background: "pink" }}></Grid>
       </Grid>
-    </div>
+    </Box>
   );
 }
 
